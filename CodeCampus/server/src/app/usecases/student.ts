@@ -95,3 +95,38 @@ export const getStudentDetailsU = async (
   }
   return studentDetails;
 };
+
+export const getWeeklyGoalU = async (
+  id: string | undefined,
+  studentDbRepository: ReturnType<StudentsDbInterface>
+) => {
+  if (!id) {
+    throw new AppError(
+      'Please provide a valid student id',
+      HttpStatusCodes.BAD_REQUEST
+    );
+  }
+  const goal = await studentDbRepository.getWeeklyGoal(id);
+  return goal;
+};
+
+export const updateWeeklyGoalU = async (
+  id: string | undefined,
+  goal: string | null,
+  studentDbRepository: ReturnType<StudentsDbInterface>
+) => {
+  if (!id) {
+    throw new AppError(
+      'Please provide a valid student id',
+      HttpStatusCodes.BAD_REQUEST
+    );
+  }
+  if (goal !== null && goal.trim() === '') {
+    throw new AppError(
+      'Goal cannot be empty',
+      HttpStatusCodes.BAD_REQUEST
+    );
+  }
+  const updatedGoal = await studentDbRepository.updateWeeklyGoal(id, goal);
+  return updatedGoal;
+};

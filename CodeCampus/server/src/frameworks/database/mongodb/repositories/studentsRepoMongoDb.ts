@@ -67,6 +67,21 @@ export const studentRepositoryMongoDB = () => {
     return total;
   };
 
+  const getWeeklyGoal = async (id: string) => {
+    const student: StudentInterface | null = await Student.findById({
+      _id: new mongoose.Types.ObjectId(id)
+    });
+    return student?.weeklyGoal || null;
+  };
+
+  const updateWeeklyGoal = async (id: string, goal: string | null) => {
+    await Student.updateOne(
+      { _id: new mongoose.Types.ObjectId(id) },
+      { weeklyGoal: goal }
+    );
+    return goal;
+  };
+
   return {
     addStudent,
     getStudentByEmail,
@@ -77,7 +92,9 @@ export const studentRepositoryMongoDB = () => {
     blockStudent,
     unblockStudent,
     getAllBlockedStudents,
-    getTotalNumberOfStudents
+    getTotalNumberOfStudents,
+    getWeeklyGoal,
+    updateWeeklyGoal
   };
 };
 

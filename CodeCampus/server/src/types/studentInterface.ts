@@ -13,6 +13,7 @@ export interface StudentInterface {
   isGoogleUser: boolean;
   isBlocked:boolean
   profileUrl:string;
+  weeklyGoal?: string | null;
 }
 
 export interface StudentUpdateInfo {

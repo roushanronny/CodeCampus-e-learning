@@ -13,6 +13,8 @@ import { selectStudent } from "../../../redux/reducers/studentSlice";
 import { getCourseByStudent } from "../../../api/endpoints/course/course";
 import { CourseInterface } from "../../../types/course";
 import { Link } from "react-router-dom";
+import { getWeeklyGoal, updateWeeklyGoal } from "../../../api/endpoints/student";
+import { toast } from "react-toastify";
 
 type Props = {};
 
@@ -24,10 +26,22 @@ const DashHome: React.FC = (props: Props) => {
   const fetchInProgress = useRef(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem("codecampus_weekly_goal");
-    if (saved) {
-      setWeeklyGoal(saved);
-    }
+    const fetchGoal = async () => {
+      try {
+        const response = await getWeeklyGoal();
+        if (response?.data?.weeklyGoal) {
+          setWeeklyGoal(response.data.weeklyGoal);
+        }
+      } catch (error) {
+        console.error("Error fetching weekly goal:", error);
+        // Fallback to localStorage for backward compatibility
+        const saved = localStorage.getItem("codecampus_weekly_goal");
+        if (saved) {
+          setWeeklyGoal(saved);
+        }
+      }
+    };
+    fetchGoal();
   }, []);
 
   useEffect(() => {
@@ -60,13 +74,26 @@ const DashHome: React.FC = (props: Props) => {
     };
   }, []);
 
-  const handleSetGoal = () => {
+  const handleSetGoal = async () => {
     const current = weeklyGoal ?? "";
     const value = window.prompt("Set your weekly learning goal:", current);
-    if (value && value.trim()) {
+    if (value !== null) {
       const trimmed = value.trim();
-      setWeeklyGoal(trimmed);
-      localStorage.setItem("codecampus_weekly_goal", trimmed);
+      try {
+        await updateWeeklyGoal(trimmed || null);
+        setWeeklyGoal(trimmed || null);
+        // Remove from localStorage as we're using server now
+        localStorage.removeItem("codecampus_weekly_goal");
+        toast.success(trimmed ? "Goal updated successfully!" : "Goal removed successfully!", {
+          position: toast.POSITION.BOTTOM_RIGHT,
+        });
+      } catch (error: any) {
+        console.error("Error updating goal:", error);
+        const errorMessage = error?.response?.data?.message || error?.message || "Failed to update goal";
+        toast.error(errorMessage, {
+          position: toast.POSITION.BOTTOM_RIGHT,
+        });
+      }
     }
   };
 

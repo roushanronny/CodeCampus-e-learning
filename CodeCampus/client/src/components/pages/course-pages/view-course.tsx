@@ -104,7 +104,8 @@ const ViewCourseStudent: React.FC = () => {
         courseDetails={{
           price: course?.price ?? 0,
           overview: course?.description ?? "",
-          isPaid: course?.isPaid ?? false,
+          // If course has price > 0, treat it as paid course
+          isPaid: course?.isPaid ?? ((course?.price ?? 0) > 0),
         }}
         setOpen={setOpenPaymentConfirmation}
       />

@@ -8,7 +8,9 @@ import { CustomRequest } from '../../types/customRequest';
 import {
   changePasswordU,
   getStudentDetailsU,
-  updateProfileU
+  updateProfileU,
+  getWeeklyGoalU,
+  updateWeeklyGoalU
 } from '../../app/usecases/student';
 import { StudentUpdateInfo } from '../../types/studentInterface';
 import { CloudServiceInterface } from '../../app/services/cloudServiceInterface';
@@ -164,6 +166,36 @@ const studentController = (
     });
   });
 
+  const getWeeklyGoal = asyncHandler(
+    async (req: CustomRequest, res: Response) => {
+      const studentId: string | undefined = req.user?.Id;
+      const goal = await getWeeklyGoalU(studentId, dbRepositoryStudent);
+      res.status(200).json({
+        status: 'success',
+        message: 'Successfully retrieved weekly goal',
+        data: { weeklyGoal: goal }
+      });
+    }
+  );
+
+  const updateWeeklyGoal = asyncHandler(
+    async (req: CustomRequest, res: Response) => {
+      const studentId: string | undefined = req.user?.Id;
+      const { weeklyGoal } = req.body;
+      const updatedGoal = await updateWeeklyGoalU(
+        studentId,
+        weeklyGoal || null,
+        dbRepositoryStudent
+      );
+      await dbRepositoryCache.clearCache(studentId ?? '');
+      res.status(200).json({
+        status: 'success',
+        message: 'Successfully updated weekly goal',
+        data: { weeklyGoal: updatedGoal }
+      });
+    }
+  );
+
   return {
     changePassword,
     updateProfile,
@@ -172,7 +204,9 @@ const studentController = (
     unblockStudent,
     getAllStudents,
     getAllBlockedStudents,
-    addContact
+    addContact,
+    getWeeklyGoal,
+    updateWeeklyGoal
   };
 };
 

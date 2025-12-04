@@ -4,6 +4,7 @@ import { useStripe, useElements } from "@stripe/react-stripe-js";
 import { useParams } from "react-router-dom";
 import PaymentModal from "./payment-success-modal";
 import { enrollStudent } from "../../../api/endpoints/course/course";
+import { toast } from "react-toastify";
 
 const PaymentFrom: React.FC = () => {
   const stripe = useStripe();
@@ -36,12 +37,29 @@ const PaymentFrom: React.FC = () => {
 
     if (error) {
       setMessage(error.message ?? "Something went wrong");
+      toast.error(error.message ?? "Payment failed. Please try again.", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
     } else if (paymentIntent && paymentIntent.status === "succeeded") {
-      setMessage("Payment status:" + paymentIntent.status);
-      await enrollStudent(courseId ?? "", paymentIntent);
-      setOpen(true);
+      try {
+        setMessage("Payment successful! Enrolling you in the course...");
+        await enrollStudent(courseId ?? "", paymentIntent);
+        setOpen(true);
+        toast.success("Payment successful! You have been enrolled in the course.", {
+          position: toast.POSITION.BOTTOM_RIGHT,
+        });
+      } catch (enrollError: any) {
+        setMessage("Payment succeeded but enrollment failed. Please contact support.");
+        const errorMessage = enrollError?.response?.data?.message || enrollError?.message || "Enrollment failed";
+        toast.error(errorMessage, {
+          position: toast.POSITION.BOTTOM_RIGHT,
+        });
+      }
     } else {
       setMessage("An unexpected error occurred.");
+      toast.error("An unexpected error occurred. Please try again.", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
     }
 
     setIsProcessing(false);

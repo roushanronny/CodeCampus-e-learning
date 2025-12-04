@@ -76,6 +76,18 @@ const studentRouter = (redisClient: RedisClient) => {
 
   router.post('/contact-us', controller.addContact);
 
+  router.get(
+    '/get-weekly-goal',
+    jwtAuthMiddleware,
+    controller.getWeeklyGoal
+  );
+
+  router.put(
+    '/update-weekly-goal',
+    jwtAuthMiddleware,
+    controller.updateWeeklyGoal
+  );
+
   return router;
 };
 export default studentRouter;

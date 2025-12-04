@@ -253,8 +253,12 @@ const AppRouter = createBrowserRouter([
     ],
   },
   {
-    path: "courses/:courseId/payment",
-    element: <StripeContainer />,
+    path: "/courses/:courseId/payment",
+    element: (
+      <Suspense fallback={<div>Loading...</div>}>
+        <StripeContainer />
+      </Suspense>
+    ),
   },
   {
     path: "/login",

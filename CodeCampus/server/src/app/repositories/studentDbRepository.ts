@@ -29,6 +29,10 @@ export const studentDbRepository = (
 
   const getTotalNumberOfStudents = async () => await repository.getTotalNumberOfStudents()
 
+  const getWeeklyGoal = async (id: string) => await repository.getWeeklyGoal(id)
+
+  const updateWeeklyGoal = async (id: string, goal: string | null) => await repository.updateWeeklyGoal(id, goal)
+
   return {
     addStudent,
     getStudentByEmail,
@@ -39,7 +43,9 @@ export const studentDbRepository = (
     blockStudent,
     unblockStudent,
     getAllBlockedStudents,
-    getTotalNumberOfStudents
+    getTotalNumberOfStudents,
+    getWeeklyGoal,
+    updateWeeklyGoal
   };
 };
 

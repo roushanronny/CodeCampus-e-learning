@@ -18,6 +18,7 @@ interface IStudent extends Document {
   isGoogleUser: boolean;
   isBlocked: boolean;
   blockedReason: string;
+  weeklyGoal?: string | null;
 }
 
 const ProfileSchema = new Schema<ProfilePic>({
@@ -96,6 +97,10 @@ const studentSchema = new Schema<IStudent>({
   blockedReason: {
     type: String,
     default: ''
+  },
+  weeklyGoal: {
+    type: String,
+    default: null
   }
 });
 

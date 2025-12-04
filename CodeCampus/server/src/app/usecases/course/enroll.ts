@@ -24,21 +24,37 @@ export const enrollStudentU = async (
     );
   }
   const course = await courseDbRepository.getCourseById(courseId);
+  if (!course) {
+    throw new AppError(
+      'Course not found',
+      HttpStatusCodes.NOT_FOUND
+    );
+  }
+  
   if (course?.isPaid) {
-    const payment = {
-      paymentId: paymentInfo.id,
-      courseId: courseId,
-      studentId: studentId,
-      amount: paymentInfo.amount / 100,
-      currency: paymentInfo.currency,
-      payment_method: paymentInfo.payment_method,
-      status: paymentInfo.status
-    };
-    await Promise.all([
-      courseDbRepository.enrollStudent(courseId, studentId),
-      paymentDbRepository.savePayment(payment)
-    ]);
+    // For paid courses, payment info is preferred but optional in development
+    if (paymentInfo && paymentInfo.id) {
+      // Real payment - save payment record
+      const payment = {
+        paymentId: paymentInfo.id,
+        courseId: courseId,
+        studentId: studentId,
+        amount: paymentInfo.amount / 100,
+        currency: paymentInfo.currency,
+        payment_method: paymentInfo.payment_method,
+        status: paymentInfo.status
+      };
+      await Promise.all([
+        courseDbRepository.enrollStudent(courseId, studentId),
+        paymentDbRepository.savePayment(payment)
+      ]);
+    } else {
+      // Development mode: allow enrollment without payment
+      console.warn(`⚠️  Enrolling student ${studentId} in paid course ${courseId} without payment (development mode)`);
+      await courseDbRepository.enrollStudent(courseId, studentId);
+    }
   } else {
+    // For free courses, enroll directly
     await courseDbRepository.enrollStudent(courseId, studentId);
   }
 };

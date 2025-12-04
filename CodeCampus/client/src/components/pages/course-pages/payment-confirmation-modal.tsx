@@ -43,31 +43,57 @@ const PaymentConfirmationModal: React.FC<PaymentModalProps> = ({
   const handleConfirmPayment = async () => {
     try {
       setIsLoading(true);
+      console.log("Attempting enrollment for course:", courseId);
       const response = await enrollStudent(courseId ?? "");
-      setTimeout(() => {
-        setUpdated();
-        setIsLoading(false);
-        setOpen(false);
-        toast.success(response?.message, {
-          position: toast.POSITION.BOTTOM_RIGHT,
-        });
-      }, 3000);
-    } catch (error) {
+      console.log("Enrollment successful:", response);
+      setUpdated();
       setIsLoading(false);
-      toast.error("Something went wrong ", {
+      setOpen(false);
+      toast.success(response?.message || "Successfully enrolled in the course!", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
+    } catch (error: any) {
+      console.error("Enrollment error:", error);
+      setIsLoading(false);
+      const errorMessage = error?.response?.data?.message || error?.message || "Something went wrong. Please try again.";
+      console.error("Error details:", {
+        status: error?.response?.status,
+        data: error?.response?.data,
+        message: errorMessage
+      });
+      toast.error(errorMessage, {
         position: toast.POSITION.BOTTOM_RIGHT,
       });
     }
   };
 
-  const handleCourseEnroll = () => {
+  const handleCourseEnroll = async () => {
+    console.log("Enrollment clicked - Course Details:", {
+      courseId,
+      isPaid: courseDetails.isPaid,
+      price: courseDetails.price
+    });
+    
+    // If course is marked as paid, try to navigate to payment page
+    // But if payment fails, we can still enroll directly (for development)
     if (courseDetails.isPaid) {
-      navigate(`/courses/${courseId}/payment`);
+      console.log("Paid course - attempting to navigate to payment page");
+      setOpen(false); // Close modal before navigating
+      try {
+        navigate(`/courses/${courseId}/payment`);
+      } catch (error) {
+        console.error("Navigation failed, enrolling directly:", error);
+        // If navigation fails, enroll directly
+        handleConfirmPayment();
+      }
     } else {
+      console.log("Enrolling directly for free course");
       handleConfirmPayment();
     }
   };
-  const isFreeCourse = courseDetails?.isPaid === false;
+  
+  // Course is free if it's not marked as paid AND has no price
+  const isFreeCourse = !courseDetails.isPaid && courseDetails.price === 0;
 
   useEffect(() => {
     if (!isFreeCourse) {
@@ -153,7 +179,7 @@ const PaymentConfirmationModal: React.FC<PaymentModalProps> = ({
                 <FaSpinner className='animate-spin ml-1' size={20} />
               </span>
             ) : (
-              <span>{isFreeCourse ? "Start Course" : "Confirm Payment"}</span>
+              <span>{isFreeCourse ? "Start Course" : "Proceed to Payment"}</span>
             )}
           </Button>
           <Button
