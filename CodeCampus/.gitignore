@@ -41,3 +41,30 @@ dump.rdb
 Screenshot*.png
 Screenshot*.jpg
 Screenshot*.jpeg
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
+*.swp
+*.tmp
+*~
+
+# Editor directories and files
+.idea/
+*.sublime-project
+*.sublime-workspace
+.vscode/
+*.code-workspace
+
+# Temporary files
+*.temp
+*.cache
