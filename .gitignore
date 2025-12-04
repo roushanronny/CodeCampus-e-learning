@@ -73,3 +73,9 @@ Thumbs.db
 *_backup_*/
 client_backup*/
 server_backup*/
+
+# Temporary/helper files
+clear-storage-commands.txt
+
+# Root level package-lock.json (lock files are in server/ and client/)
+package-lock.json
