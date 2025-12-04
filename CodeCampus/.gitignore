@@ -33,3 +33,11 @@ logs/
 # Windows
 Thumbs.db
 dump.rdb
+
+# Screenshots (anywhere in the repository)
+**/Screenshot*.png
+**/Screenshot*.jpg
+**/Screenshot*.jpeg
+Screenshot*.png
+Screenshot*.jpg
+Screenshot*.jpeg
