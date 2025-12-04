@@ -68,3 +68,8 @@ Thumbs.db
 # Temporary files
 *.temp
 *.cache
+
+# Backup folders
+*_backup_*/
+client_backup*/
+server_backup*/
