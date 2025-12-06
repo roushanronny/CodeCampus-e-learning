@@ -29,8 +29,12 @@ const io = new Server<ClientToServerEvents,ServerToClientEvents,InterServerEvent
 
 socketConfig(io,authService())  
 
-//* connecting mongoDb 
-connectToMongoDb();
+//* connecting mongoDb - wait for connection before starting server
+connectToMongoDb().then(() => {
+  console.log('MongoDB connection established');
+}).catch((error) => {
+  console.error('Failed to connect to MongoDB:', error);
+});
 
 //* connection to redis (optional - app will work without it)
 const redisClient = connection().createRedisClient();
