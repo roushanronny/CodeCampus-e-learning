@@ -9,7 +9,14 @@ export function redisRepository(redisClient: RedisClient) {
     key: string;
     expireTimeSec: number;
     data: string;
-  }) =>await redisClient.setEx(key, expireTimeSec, data);
+  }) => {
+    if (!redisClient) return;
+    try {
+      await redisClient.setEx(key, expireTimeSec, data);
+    } catch (error) {
+      console.log('Redis cache set failed, continuing without cache');
+    }
+  };
   return {
     setCache,
   };

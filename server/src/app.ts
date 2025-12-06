@@ -32,7 +32,7 @@ socketConfig(io,authService())
 //* connecting mongoDb 
 connectToMongoDb();
 
-//* connection to redis
+//* connection to redis (optional - app will work without it)
 const redisClient = connection().createRedisClient();
 
 //* express config connection
@@ -52,4 +52,4 @@ app.all('*', (req, res, next: NextFunction) => {
 //* starting the server with server config
 serverConfig(server).startServer();
 
-export type RedisClient = typeof redisClient;
+export type RedisClient = typeof redisClient | null;
