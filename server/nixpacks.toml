@@ -1,6 +1,9 @@
 [phases.setup]
 nixPkgs = ["nodejs-18_x", "npm"]
 
+[variables]
+NODE_VERSION = "18"
+
 [phases.install]
 cmds = ["npm install"]
 
