@@ -52,4 +52,15 @@ app.all('*', (req, res, next: NextFunction) => {
 //* starting the server with server config
 serverConfig(server).startServer();
 
+// Handle uncaught exceptions and unhandled rejections to prevent crashes
+process.on('uncaughtException', (error: Error) => {
+  console.error('Uncaught Exception:', error);
+  // Don't exit - log and continue
+});
+
+process.on('unhandledRejection', (reason: any, promise: Promise<any>) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  // Don't exit - log and continue
+});
+
 export type RedisClient = typeof redisClient | null;

@@ -13,6 +13,15 @@ import categoryRouter from './category';
 import studentRouter from './student';
 
 const routes = (app: Application, redisClient: RedisClient) => {
+  // Health check endpoint for Railway/verification
+  app.get('/health', (req, res) => {
+    res.status(200).json({
+      status: 'ok',
+      message: 'Server is running',
+      timestamp: new Date().toISOString()
+    });
+  });
+
   app.use('/api/auth', authRouter());
   app.use('/api/all/refresh-token', refreshRouter());
   app.use(

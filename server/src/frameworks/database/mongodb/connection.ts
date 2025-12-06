@@ -9,7 +9,12 @@ const connectDB = async () => {
     });
     console.log(`Database connected successfully`.bg_green);
   } catch (error: any) {
-    process.exit(1);
+    console.error('MongoDB connection error:', error.message);
+    // Don't exit immediately - retry connection
+    setTimeout(() => {
+      console.log('Retrying MongoDB connection...');
+      connectDB();
+    }, 5000);
   }
 };
 export default connectDB;
