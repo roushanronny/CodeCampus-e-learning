@@ -25,8 +25,23 @@ const expressConfig = (app: Application) => {
     app.use(morgan('dev'));
   }
   app.set('trust proxy', true); // Enable trust for X-Forwarded-* headers
+  // CORS configuration - allows frontend from Vercel or localhost
+  const allowedOrigins = [
+    configKeys.ORIGIN_PORT || 'http://localhost:3000',
+    process.env.FRONTEND_URL
+  ].filter(Boolean);
+
   app.use(cors({
-    origin: configKeys.ORIGIN_PORT || 'http://localhost:3000',
+    origin: function (origin, callback) {
+      // Allow requests with no origin (mobile apps, Postman, etc.)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
