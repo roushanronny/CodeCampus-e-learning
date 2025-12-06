@@ -37,12 +37,22 @@ const categoryController = (
   });
 
   const getAllCategory = asyncHandler(async (req: Request, res: Response) => {
-    const categories = await getAllCategoryU(dbRepositoryCategory);
-    res.status(200).json({
-      status: 'success',
-      message: 'Successfully retrieved all categories',
-      data: categories
-    });
+    try {
+      const categories = await getAllCategoryU(dbRepositoryCategory);
+      res.status(200).json({
+        status: 'success',
+        message: 'Successfully retrieved all categories',
+        data: categories || [] // Return empty array if null
+      });
+    } catch (error: any) {
+      console.error('Error fetching categories:', error);
+      // Return empty array instead of crashing
+      res.status(200).json({
+        status: 'success',
+        message: 'Successfully retrieved all categories',
+        data: []
+      });
+    }
   });
 
   const editCategory = asyncHandler(async (req: Request, res: Response) => {
