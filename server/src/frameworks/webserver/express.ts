@@ -15,7 +15,7 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again later.',
   keyGenerator: (req) => {
     const xRealIp = req.headers['x-real-ip'];
-    return xRealIp ? String(xRealIp) : req.ip;
+    return xRealIp ? String(xRealIp) : (req.ip || 'unknown');
   }
 });
 

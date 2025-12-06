@@ -40,7 +40,7 @@ const authRouter = () => {
   router.post("/login-with-google",controller.loginWithGoogle)
   
   //* Instructor
-  router.post("/instructor/instructor-register",upload.array('images'), controller.registerInstructor)
+  router.post("/instructor/instructor-register",upload.array('images') as any, controller.registerInstructor)
   router.post("/instructor/instructor-login",controller.loginInstructor)
 
   //* Admin 

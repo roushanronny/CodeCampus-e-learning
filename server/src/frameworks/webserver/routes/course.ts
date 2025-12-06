@@ -44,7 +44,7 @@ const courseRouter = (redisClient: RedisClient) => {
     '/instructors/add-course',
     jwtAuthMiddleware,
     roleCheckMiddleware('instructor'),
-    upload.array('files'),
+    upload.array('files') as any,
     controller.addCourse
   );
 
@@ -52,7 +52,7 @@ const courseRouter = (redisClient: RedisClient) => {
     '/instructors/edit-course/:courseId',
     jwtAuthMiddleware,
     roleCheckMiddleware('instructor'),
-    upload.array('files'),
+    upload.array('files') as any,
     controller.editCourse
   );
 
@@ -75,7 +75,7 @@ const courseRouter = (redisClient: RedisClient) => {
     '/instructors/add-lesson/:courseId',
     jwtAuthMiddleware,
     roleCheckMiddleware('instructor'),
-    upload.array('media'),
+    upload.array('media') as any,
     controller.addLesson
   );
 
@@ -83,7 +83,7 @@ const courseRouter = (redisClient: RedisClient) => {
     '/instructors/edit-lesson/:lessonId',
     jwtAuthMiddleware,
     roleCheckMiddleware('instructor'),
-    upload.array('media'),
+    upload.array('media') as any,
     controller.editLesson
   );
 

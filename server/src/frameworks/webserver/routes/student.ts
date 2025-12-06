@@ -40,7 +40,7 @@ const studentRouter = (redisClient: RedisClient) => {
   router.put(
     '/update-profile',
     jwtAuthMiddleware,
-    upload.single('image'),
+    upload.single('image') as any,
     controller.updateProfile
   );
 

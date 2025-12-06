@@ -64,7 +64,7 @@ const instructorRouter = () => {
   router.put(
     '/update-profile',
     jwtAuthMiddleware,
-    upload.single('image'),
+    upload.single('image') as any,
     roleCheckMiddleware('instructor'),
     controller.updateProfile
   );

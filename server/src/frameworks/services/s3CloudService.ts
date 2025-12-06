@@ -119,7 +119,7 @@ export const s3Service = () => {
       Key: key,
       Body: file.buffer,
       ContentType: file.mimetype,
-      ACL: 'public-read', 
+      ACL: 'public-read' as const, 
     };
 
     const command = new PutObjectCommand(params);
