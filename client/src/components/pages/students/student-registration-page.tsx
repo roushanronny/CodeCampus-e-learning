@@ -1,5 +1,5 @@
 import React from "react";
-import { Formik, Form, Field, ErrorMessage, useFormikContext } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import { registerStudent } from "../../../api/endpoints/auth/student-auth";
 import { studentRegistrationValidationSchema } from "../../../validations/auth/studentRegisterValidation";
 import { toast } from "react-toastify";
@@ -9,21 +9,6 @@ import { StudentData } from "../../../types/student";
 import { useNavigate } from "react-router-dom";
 import { APP_LOGO } from "../../../constants/common";
 import GoogleAuthComponent from "../../common/google-auth-component";
-
-const SubmitButton: React.FC = () => {
-  const { isSubmitting } = useFormikContext();
-  return (
-    <div className='flex flex-col md:flex-row items-center justify-between mb-6'>
-      <button
-        type='submit'
-        disabled={isSubmitting}
-        className='flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:opacity-50 disabled:cursor-not-allowed'
-      >
-        {isSubmitting ? 'Signing up...' : 'Sign up'}
-      </button>
-    </div>
-  );
-};
 
 const StudentRegistrationPage: React.FC = () => {
   const navigate = useNavigate();
@@ -74,6 +59,7 @@ const StudentRegistrationPage: React.FC = () => {
             validationSchema={studentRegistrationValidationSchema}
             onSubmit={handleSubmit}
           >
+            {({ isSubmitting }) => (
             <Form>
               <div className='flex flex-wrap -mx-3 mb-4'>
                 <div className='w-full md:w-1/2 px-3 mb-6 md:mb-0'>
@@ -221,8 +207,17 @@ const StudentRegistrationPage: React.FC = () => {
               <div className='m-5'>
                 <GoogleAuthComponent />
               </div>
-              <SubmitButton />
+              <div className='flex flex-col md:flex-row items-center justify-between mb-6'>
+                <button
+                  type='submit'
+                  disabled={isSubmitting}
+                  className='flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:opacity-50 disabled:cursor-not-allowed'
+                >
+                  {isSubmitting ? 'Signing up...' : 'Sign up'}
+                </button>
+              </div>
             </Form>
+            )}
           </Formik>
           <p className='mt-10 text-center text-sm text-gray-500'>
             Already have an account?
