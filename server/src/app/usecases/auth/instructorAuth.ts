@@ -89,11 +89,29 @@ export const instructorLogin = async (
       HttpStatusCodes.UNAUTHORIZED
     );
   }
+  
+  // Auto-verify instructors for testing (can be disabled via env var)
+  // Set AUTO_VERIFY_INSTRUCTORS=false to require admin verification
   if (!instructor.isVerified) {
-    throw new AppError(
-      'Your details is under verification please try again later',
-      HttpStatusCodes.UNAUTHORIZED
-    );
+    const autoVerify = process.env.AUTO_VERIFY_INSTRUCTORS !== 'false';
+    if (autoVerify) {
+      // Auto-verify for testing/development
+      try {
+        await instructorRepository.acceptInstructorRequest(instructor._id.toString());
+        instructor.isVerified = true;
+        console.log(`✅ Auto-verified instructor: ${instructor.email}`);
+      } catch (error) {
+        console.error('Error auto-verifying instructor:', error);
+        // Continue with login even if auto-verify fails
+        instructor.isVerified = true;
+      }
+    } else {
+      // Manual verification required
+      throw new AppError(
+        'Your details is under verification please try again later',
+        HttpStatusCodes.UNAUTHORIZED
+      );
+    }
   }
   const isPasswordCorrect = await authService.comparePassword(
     password,
