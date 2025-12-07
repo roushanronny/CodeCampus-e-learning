@@ -51,16 +51,36 @@ serverConfig(server).startServer();
 
 //* Connect to MongoDB in background (non-blocking)
 const connectMongoDB = async () => {
-  try {
-    console.log('Connecting to MongoDB...');
-    await connectToMongoDb();
-    console.log('MongoDB connection established');
-  } catch (error: any) {
-    console.error('Failed to connect to MongoDB:', error.message);
-    console.log('Retrying MongoDB connection in 5 seconds...');
-    // Retry connection after 5 seconds
-    setTimeout(connectMongoDB, 5000);
-  }
+  let retryCount = 0;
+  const maxRetries = 20; // Try for about 100 seconds (20 * 5s)
+  
+  const attemptConnection = async () => {
+    try {
+      console.log(`[MongoDB] Connection attempt ${retryCount + 1}/${maxRetries}...`);
+      await connectToMongoDb();
+      console.log('✅ MongoDB connection established successfully');
+      retryCount = 0; // Reset on success
+    } catch (error: any) {
+      retryCount++;
+      console.error(`❌ Failed to connect to MongoDB (attempt ${retryCount}/${maxRetries}):`, error.message);
+      
+      if (retryCount >= maxRetries) {
+        console.error('⚠️  Maximum retry attempts reached. MongoDB connection failed.');
+        console.error('Please check:');
+        console.error('1. DB_CLUSTER_URL is set in Railway environment variables');
+        console.error('2. MongoDB Atlas network access allows Railway IPs (0.0.0.0/0)');
+        console.error('3. Database user credentials are correct');
+        // Continue retrying but with longer intervals
+        setTimeout(attemptConnection, 30000); // Retry every 30 seconds after max retries
+      } else {
+        console.log(`Retrying MongoDB connection in 5 seconds...`);
+        setTimeout(attemptConnection, 5000);
+      }
+    }
+  };
+  
+  // Start connection attempt
+  attemptConnection();
 };
 
 // Start MongoDB connection in background
