@@ -46,25 +46,25 @@ app.all('*', (req, res, next: NextFunction) => {
   next(new AppError('Not found', 404));
 });
 
-//* connecting mongoDb - wait for connection before starting server
-const startApplication = async () => {
+//* Start server immediately - MongoDB will connect in background
+serverConfig(server).startServer();
+
+//* Connect to MongoDB in background (non-blocking)
+const connectMongoDB = async () => {
   try {
     console.log('Connecting to MongoDB...');
     await connectToMongoDb();
     console.log('MongoDB connection established');
-    
-    //* starting the server with server config - only after MongoDB is connected
-    serverConfig(server).startServer();
   } catch (error: any) {
     console.error('Failed to connect to MongoDB:', error.message);
     console.log('Retrying MongoDB connection in 5 seconds...');
     // Retry connection after 5 seconds
-    setTimeout(startApplication, 5000);
+    setTimeout(connectMongoDB, 5000);
   }
 };
 
-// Start the application
-startApplication();
+// Start MongoDB connection in background
+connectMongoDB();
 
 // Handle uncaught exceptions and unhandled rejections to prevent crashes
 process.on('uncaughtException', (error: Error) => {

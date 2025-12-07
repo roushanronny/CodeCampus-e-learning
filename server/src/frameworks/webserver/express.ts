@@ -31,8 +31,9 @@ const expressConfig = (app: Application) => {
     process.env.FRONTEND_URL
   ].filter(Boolean);
 
-  // Add Vercel preview URLs pattern (allows all *.vercel.app subdomains)
+  // Add Vercel preview URLs pattern (allows all *.vercel.app subdomains and preview URLs)
   const vercelPattern = /^https:\/\/.*\.vercel\.app$/;
+  const vercelPreviewPattern = /^https:\/\/.*\.vercel\.app$/;
   
   app.use(cors({
     origin: function (origin, callback) {
@@ -44,11 +45,13 @@ const expressConfig = (app: Application) => {
         return callback(null, true);
       }
       
-      // Allow all Vercel preview deployments (*.vercel.app)
-      if (vercelPattern.test(origin)) {
+      // Allow all Vercel deployments (*.vercel.app) - includes preview and production
+      if (vercelPattern.test(origin) || vercelPreviewPattern.test(origin)) {
         return callback(null, true);
       }
       
+      // Log for debugging
+      console.log('CORS blocked origin:', origin);
       callback(new Error('Not allowed by CORS'));
     },
     credentials: true,
