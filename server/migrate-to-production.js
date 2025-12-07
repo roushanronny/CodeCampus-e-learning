@@ -17,7 +17,23 @@ const courseSchema = new mongoose.Schema({}, { collection: 'course', strict: fal
 const instructorSchema = new mongoose.Schema({}, { collection: 'instructor', strict: false });
 
 async function detectLocalDatabase() {
-  // Try tutortrek first (old name - likely has data)
+  // Try codecampus first (current name)
+  try {
+    const testConn = await mongoose.createConnection(`${LOCAL_DB_URL}/codecampus`);
+    const students = await testConn.db.collection('students').countDocuments();
+    const courses = await testConn.db.collection('course').countDocuments();
+    const instructors = await testConn.db.collection('instructor').countDocuments();
+    await testConn.close();
+    const total = students + courses + instructors;
+    if (total > 0) {
+      console.log(`📦 Detected local database: codecampus (${students} students, ${courses} courses, ${instructors} instructors)\n`);
+      return 'codecampus';
+    }
+  } catch (e) {
+    console.log('⚠️  Could not check codecampus:', e.message);
+  }
+  
+  // Try old database name (for backward compatibility)
   try {
     const testConn = await mongoose.createConnection(`${LOCAL_DB_URL}/tutortrek`);
     const students = await testConn.db.collection('students').countDocuments();
@@ -26,11 +42,11 @@ async function detectLocalDatabase() {
     await testConn.close();
     const total = students + courses + instructors;
     if (total > 0) {
-      console.log(`📦 Detected local database: tutortrek (${students} students, ${courses} courses, ${instructors} instructors)\n`);
+      console.log(`📦 Detected local database: tutortrek (legacy - ${students} students, ${courses} courses, ${instructors} instructors)\n`);
       return 'tutortrek';
     }
   } catch (e) {
-    console.log('⚠️  Could not check tutortrek:', e.message);
+    console.log('⚠️  Could not check legacy database:', e.message);
   }
   
   // Try codecampus
@@ -49,9 +65,9 @@ async function detectLocalDatabase() {
     console.log('⚠️  Could not check codecampus:', e.message);
   }
   
-  // Default to tutortrek (most likely to have data)
-  console.log('📦 Using default database: tutortrek\n');
-  return 'tutortrek';
+  // Default to codecampus
+  console.log('📦 Using default database: codecampus\n');
+  return 'codecampus';
 }
 
 async function migrateData() {
