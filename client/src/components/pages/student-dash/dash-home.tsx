@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 import { selectStudent } from "../../../redux/reducers/studentSlice";
 import { getCourseByStudent } from "../../../api/endpoints/course/course";
 import { CourseInterface } from "../../../types/course";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getWeeklyGoal, updateWeeklyGoal } from "../../../api/endpoints/student";
 import { toast } from "react-toastify";
 
@@ -20,6 +20,7 @@ type Props = {};
 
 const DashHome: React.FC = (props: Props) => {
   const student = useSelector(selectStudent);
+  const navigate = useNavigate();
   const [weeklyGoal, setWeeklyGoal] = useState<string | null>(null);
   const [courses, setCourses] = useState<CourseInterface[]>([]);
   const [loading, setLoading] = useState(true);
@@ -128,8 +129,11 @@ const DashHome: React.FC = (props: Props) => {
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {/* Total Courses */}
-        <Card className="shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
-          <CardBody className="p-6">
+        <div 
+          className="bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-all hover:border-blue-500 hover:scale-105 h-full cursor-pointer"
+          onClick={() => navigate("/dashboard/my-courses")}
+        >
+          <div className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <Typography variant="small" color="gray" className="mb-2 font-semibold">
@@ -146,12 +150,15 @@ const DashHome: React.FC = (props: Props) => {
                 <BookOpenIcon className="h-8 w-8 text-blue-600" />
               </div>
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
 
         {/* Completed Courses */}
-        <Card className="shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
-          <CardBody className="p-6">
+        <div 
+          className="bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-all hover:border-green-500 hover:scale-105 h-full cursor-pointer"
+          onClick={() => navigate("/dashboard/my-courses")}
+        >
+          <div className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <Typography variant="small" color="gray" className="mb-2 font-semibold">
@@ -168,12 +175,15 @@ const DashHome: React.FC = (props: Props) => {
                 <AcademicCapIcon className="h-8 w-8 text-green-600" />
               </div>
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
 
         {/* Total Lessons */}
-        <Card className="shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
-          <CardBody className="p-6">
+        <div 
+          className="bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-all hover:border-purple-500 hover:scale-105 h-full cursor-pointer"
+          onClick={() => navigate("/dashboard/my-courses")}
+        >
+          <div className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <Typography variant="small" color="gray" className="mb-2 font-semibold">
@@ -190,12 +200,15 @@ const DashHome: React.FC = (props: Props) => {
                 <ClockIcon className="h-8 w-8 text-purple-600" />
               </div>
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
 
         {/* Learning Streak */}
-        <Card className="shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
-          <CardBody className="p-6">
+        <div 
+          className="bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-all hover:border-orange-500 hover:scale-105 h-full cursor-pointer"
+          onClick={handleSetGoal}
+        >
+          <div className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <Typography variant="small" color="gray" className="mb-2 font-semibold">
@@ -212,8 +225,8 @@ const DashHome: React.FC = (props: Props) => {
                 <FireIcon className="h-8 w-8 text-orange-600" />
               </div>
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
       </div>
 
       {/* Main Content Area */}

@@ -6,7 +6,6 @@ require('dotenv').config({ path: './.env' });
 
 // Local MongoDB
 const LOCAL_DB_URL = process.env.DB_CLUSTER_URL || 'mongodb://127.0.0.1:27017';
-const LOCAL_DB_NAME = process.env.DB_NAME || 'codecampus';
 
 // Production MongoDB (update this with your actual connection string)
 const PROD_DB_URL = process.env.PROD_DB_CLUSTER_URL || 'mongodb+srv://roushanydv2003_db_user:Qtyj79zS0eKsnnGK@cluster0.wocqkj8.mongodb.net/codecampus';
@@ -17,15 +16,56 @@ const studentSchema = new mongoose.Schema({}, { collection: 'students', strict: 
 const courseSchema = new mongoose.Schema({}, { collection: 'course', strict: false });
 const instructorSchema = new mongoose.Schema({}, { collection: 'instructor', strict: false });
 
+async function detectLocalDatabase() {
+  // Try tutortrek first (old name - likely has data)
+  try {
+    const testConn = await mongoose.createConnection(`${LOCAL_DB_URL}/tutortrek`);
+    const students = await testConn.db.collection('students').countDocuments();
+    const courses = await testConn.db.collection('course').countDocuments();
+    const instructors = await testConn.db.collection('instructor').countDocuments();
+    await testConn.close();
+    const total = students + courses + instructors;
+    if (total > 0) {
+      console.log(`📦 Detected local database: tutortrek (${students} students, ${courses} courses, ${instructors} instructors)\n`);
+      return 'tutortrek';
+    }
+  } catch (e) {
+    console.log('⚠️  Could not check tutortrek:', e.message);
+  }
+  
+  // Try codecampus
+  try {
+    const testConn = await mongoose.createConnection(`${LOCAL_DB_URL}/codecampus`);
+    const students = await testConn.db.collection('students').countDocuments();
+    const courses = await testConn.db.collection('course').countDocuments();
+    const instructors = await testConn.db.collection('instructor').countDocuments();
+    await testConn.close();
+    const total = students + courses + instructors;
+    if (total > 0) {
+      console.log(`📦 Detected local database: codecampus (${students} students, ${courses} courses, ${instructors} instructors)\n`);
+      return 'codecampus';
+    }
+  } catch (e) {
+    console.log('⚠️  Could not check codecampus:', e.message);
+  }
+  
+  // Default to tutortrek (most likely to have data)
+  console.log('📦 Using default database: tutortrek\n');
+  return 'tutortrek';
+}
+
 async function migrateData() {
   let localConn, prodConn;
   
   try {
     console.log('🔄 Starting data migration...\n');
     
+    // Detect local database name
+    const actualLocalDbName = await detectLocalDatabase();
+    
     // Connect to local MongoDB
     console.log('📡 Connecting to local MongoDB...');
-    localConn = await mongoose.createConnection(`${LOCAL_DB_URL}/${LOCAL_DB_NAME}`);
+    localConn = await mongoose.createConnection(`${LOCAL_DB_URL}/${actualLocalDbName}`);
     console.log('✅ Connected to local MongoDB\n');
     
     // Connect to production MongoDB

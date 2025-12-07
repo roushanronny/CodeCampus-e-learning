@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Typography, Card, CardBody, Button, Chip, Avatar } from "@material-tailwind/react";
 import {
   BookOpenIcon,
@@ -20,6 +20,7 @@ import { formatDate } from "../../../utils/helpers";
 import { USER_AVATAR } from "../../../constants/common";
 
 const InstructorDashboard: React.FC = () => {
+  const navigate = useNavigate();
   const [instructor, setInstructor] = useState<InstructorApiResponse | null>(null);
   const [courses, setCourses] = useState<GetCourseByInstructorInterface[]>(() => {
     try {
@@ -138,8 +139,11 @@ const InstructorDashboard: React.FC = () => {
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {/* Total Courses */}
-        <Card className="shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
-          <CardBody className="p-6">
+        <div 
+          className="bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-all hover:border-blue-500 hover:scale-105 h-full cursor-pointer"
+          onClick={() => navigate("/instructors/view-course")}
+        >
+          <div className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <Typography variant="small" color="gray" className="mb-2 font-semibold">
@@ -156,12 +160,15 @@ const InstructorDashboard: React.FC = () => {
                 <BookOpenIcon className="h-8 w-8 text-blue-600" />
               </div>
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
 
         {/* Total Students */}
-        <Card className="shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
-          <CardBody className="p-6">
+        <div 
+          className="bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-all hover:border-green-500 hover:scale-105 h-full cursor-pointer"
+          onClick={() => navigate("/instructors/view-students")}
+        >
+          <div className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <Typography variant="small" color="gray" className="mb-2 font-semibold">
@@ -178,12 +185,15 @@ const InstructorDashboard: React.FC = () => {
                 <UserGroupIcon className="h-8 w-8 text-green-600" />
               </div>
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
 
         {/* Total Enrollments */}
-        <Card className="shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
-          <CardBody className="p-6">
+        <div 
+          className="bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-all hover:border-purple-500 hover:scale-105 h-full cursor-pointer"
+          onClick={() => navigate("/instructors/view-students")}
+        >
+          <div className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <Typography variant="small" color="gray" className="mb-2 font-semibold">
@@ -200,12 +210,15 @@ const InstructorDashboard: React.FC = () => {
                 <UserGroupIcon className="h-8 w-8 text-purple-600" />
               </div>
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
 
         {/* Total Revenue */}
-        <Card className="shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
-          <CardBody className="p-6">
+        <div 
+          className="bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-all hover:border-yellow-500 hover:scale-105 h-full cursor-pointer"
+          onClick={() => navigate("/instructors/view-course")}
+        >
+          <div className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <Typography variant="small" color="gray" className="mb-2 font-semibold">
@@ -222,8 +235,8 @@ const InstructorDashboard: React.FC = () => {
                 <CurrencyDollarIcon className="h-8 w-8 text-yellow-600" />
               </div>
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
       </div>
 
       {/* Recent Courses Section */}
