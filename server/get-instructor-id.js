@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const DB_CLUSTER_URL = process.env.DB_CLUSTER_URL || 'mongodb://127.0.0.1:27017';
-const DB_NAME = process.env.DB_NAME || 'tutortrek';
+const DB_NAME = process.env.DB_NAME || 'codecampus';
 
 const instructorSchema = new mongoose.Schema({
   email: String,

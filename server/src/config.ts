@@ -9,7 +9,7 @@ const configKeys = {
   PORT: process.env.PORT || '4000',
 
   // Default DB name for local development
-  DB_NAME: process.env.DB_NAME || 'tutortrek',
+  DB_NAME: process.env.DB_NAME || 'codecampus',
 
   // JWT secrets: fall back to dev defaults if env is missing to avoid runtime errors
   JWT_SECRET: process.env.JWT_SECRET || 'dev_jwt_secret_change_me',

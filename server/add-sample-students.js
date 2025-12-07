@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 require('dotenv').config({ path: './.env' });
 
 const DB_CLUSTER_URL = process.env.DB_CLUSTER_URL || 'mongodb://127.0.0.1:27017';
-const DB_NAME = process.env.DB_NAME || 'tutortrek';
+const DB_NAME = process.env.DB_NAME || 'codecampus';
 
 // Student Schema
 const studentSchema = new mongoose.Schema({
