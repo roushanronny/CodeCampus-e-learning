@@ -33,9 +33,9 @@ const SelectInterest: React.FC = () => {
         htmlFor='interests'
         className='block text-sm font-medium leading-5 text-gray-700'
       >
-        Interests
+        Interests (Optional)
       </label>
-      {categories ? (
+      {categories && categories.length > 0 ? (
         <Field
           id='interests'
           name='interests'
@@ -45,8 +45,18 @@ const SelectInterest: React.FC = () => {
             label: category?.name,
           }))}
         />
+      ) : categories === null ? (
+        <div className="mt-2">
+          <p className="text-sm text-gray-500">Categories unavailable. You can register without selecting interests.</p>
+          <Field
+            id='interests'
+            name='interests'
+            type="hidden"
+            value={[]}
+          />
+        </div>
       ) : (
-        <p>Loading categories...</p>
+        <p className="text-sm text-gray-500">Loading categories...</p>
       )}
       <ErrorMessage
         name='interests'
