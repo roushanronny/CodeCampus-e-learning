@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 import configKeys from "../../../config";
 mongoose.set("strictQuery", true);
 
+// Export a function to check if MongoDB is connected
+export const isMongoConnected = (): boolean => {
+  return mongoose.connection.readyState === 1;
+};
+
 const connectDB = async () => {
   try {
     // Check if already connected

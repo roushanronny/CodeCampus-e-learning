@@ -56,8 +56,20 @@ export const studentLogin = async (
   refreshTokenRepository: ReturnType<RefreshTokenDbInterface>,
   authService: ReturnType<AuthServiceInterface>
 ) => {
-  const student: StudentInterface | null =
-    await studentRepository.getStudentByEmail(email);
+  let student: StudentInterface | null;
+  try {
+    student = await studentRepository.getStudentByEmail(email);
+  } catch (error: any) {
+    // Handle MongoDB connection errors
+    if (error.message?.includes('buffering') || error.message?.includes('timeout')) {
+      throw new AppError(
+        'Database connection issue. Please try again in a moment.',
+        HttpStatusCodes.SERVICE_UNAVAILABLE
+      );
+    }
+    throw error;
+  }
+  
   if (!student) {
     throw new AppError("this user doesn't exist", HttpStatusCodes.NOT_FOUND);
   }

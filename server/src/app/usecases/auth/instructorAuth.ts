@@ -69,8 +69,20 @@ export const instructorLogin = async (
   refreshTokenRepository: ReturnType<RefreshTokenDbInterface>,
   authService: ReturnType<AuthServiceInterface>
 ) => {
-  const instructor: SavedInstructorInterface | null =
-    await instructorRepository.getInstructorByEmail(email);
+  let instructor: SavedInstructorInterface | null;
+  try {
+    instructor = await instructorRepository.getInstructorByEmail(email);
+  } catch (error: any) {
+    // Handle MongoDB connection errors
+    if (error.message?.includes('buffering') || error.message?.includes('timeout')) {
+      throw new AppError(
+        'Database connection issue. Please try again in a moment.',
+        HttpStatusCodes.SERVICE_UNAVAILABLE
+      );
+    }
+    throw error;
+  }
+  
   if (!instructor) {
     throw new AppError(
       "Instructor doesn't exist, please register",
