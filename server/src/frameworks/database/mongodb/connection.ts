@@ -7,14 +7,14 @@ export const isMongoConnected = (): boolean => {
   return mongoose.connection.readyState === 1;
 };
 
-const connectDB = async () => {
-  try {
-    // Check if already connected
-    if (mongoose.connection.readyState === 1) {
-      console.log('MongoDB already connected');
-      return;
-    }
+const connectDB = async (): Promise<void> => {
+  // Check if already connected
+  if (mongoose.connection.readyState === 1) {
+    console.log('MongoDB already connected');
+    return;
+  }
 
+  try {
     await mongoose.connect(configKeys.DB_CLUSTER_URL, {
       dbName: configKeys.DB_NAME,
       serverSelectionTimeoutMS: 30000, // 30 seconds timeout
@@ -28,11 +28,8 @@ const connectDB = async () => {
     console.log(`Database connected successfully`.bg_green);
   } catch (error: any) {
     console.error('MongoDB connection error:', error.message);
-    // Don't exit immediately - retry connection
-    setTimeout(() => {
-      console.log('Retrying MongoDB connection...');
-      connectDB();
-    }, 5000);
+    // Throw error so caller can handle retry
+    throw error;
   }
 };
 
