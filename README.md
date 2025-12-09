@@ -170,14 +170,6 @@ The project follows **Clean Architecture** principles:
 
 API documentation will be available soon. *(To be updated with CodeCampus API docs)*
 
-## 🎨 Design Resources
-
-- [Figma Design Files](https://www.figma.com/file/xSUUeK3lB9XHqBe3pg7pnM/CodeCampus?type=design&node-id=84%3A7156&t=uJ3S7XQV7OjJphmL-1)
-- Database Design and Modules Specifications *(To be added)*
-
-## 🌐 Live Demo
-
-- [Live Application](https://codecampus.online/)
 
 ## 📝 Recent Updates
 
